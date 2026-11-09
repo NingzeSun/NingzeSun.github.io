@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ningze Sun</title>
+  <meta name="description" content="Ningze Sun, University of Waterloo. Research on bimanual and multi-agent robot manipulation.">
+  <link rel="icon" href="bi-skad/static/images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* Starter personal page; the Bi-SKAD project page lives in bi-skad/. */
+    :root {
+      --accent: #2c6bc4;
+      --accent-hover: #2358a3;
+      --accent-line: rgba(44, 107, 196, 0.16);
+      --ink: #363636;
+      --text: #4a4a4a;
+      --muted: #777;
+      --font: 'Avenir Next', 'Avenir', 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #fff; color: var(--text); font-family: var(--font); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+    header.container { padding-top: 4rem; padding-bottom: 1.5rem; }
+    h1 { margin: 0 0 0.4rem; color: var(--ink); font-size: 2.6rem; font-weight: 600; line-height: 1.15; }
+    .affiliation { margin: 0 0 1rem; color: #555; font-size: 1.15rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .links a {
+      display: inline-flex; align-items: center; gap: 0.45em; height: 2.3em; padding: 0 1.1em;
+      border-radius: 999px; background: var(--accent); color: #fff; font-weight: 500;
+    }
+    .links a:hover { background: var(--accent-hover); text-decoration: none; }
+    h2 { display: flex; align-items: center; margin: 2rem 0 1.2rem; color: var(--ink); font-size: 1.7rem; font-weight: 600; }
+    h2::after { content: ""; flex: 1 1 auto; height: 4px; margin-left: 0.9rem; border-radius: 4px; background: var(--accent); }
+    .project {
+      display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 1.4rem; align-items: center;
+      padding: 1.1rem; border: 1px solid var(--accent-line); border-radius: 16px;
+      box-shadow: 0 8px 26px rgba(35, 88, 163, 0.10);
+    }
+    .project img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    .project h3 { margin: 0 0 0.3rem; color: var(--ink); font-size: 1.15rem; font-weight: 600; line-height: 1.35; }
+    .project .authors { margin: 0 0 0.5rem; color: #555; font-size: 0.95rem; }
+    .project p { margin: 0 0 0.6rem; font-size: 0.95rem; }
+    .project .project-links a { font-weight: 600; margin-right: 1rem; }
+    footer.container { margin-top: 3rem; padding-top: 2rem; padding-bottom: 2.5rem; color: var(--muted); font-size: 0.85rem; text-align: center; }
+    @media (max-width: 640px) {
+      header.container { padding-top: 2.5rem; }
+      h1 { font-size: 2rem; }
+      .project { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <h1>Ningze Sun</h1>
+    <p class="affiliation">University of Waterloo</p>
+    <div class="links">
+      <a href="https://github.com/NingzeSun" target="_blank" rel="noopener"><i class="fab fa-github" aria-hidden="true"></i>GitHub</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Research</h2>
+    <article class="project">
+      <a href="bi-skad/"><img src="bi-skad/static/images/overview.png" alt="Bi-SKAD overview figure" width="2400" height="1296"></a>
+      <div>
+        <h3><a href="bi-skad/">Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion</a></h3>
+        <p class="authors"><b>Ningze Sun</b>, Roya Firoozi</p>
+        <p>
+          Two per-arm diffusion policies, trained together and coordinated through a compact message at execution,
+          stay robust when one arm's sensing is corrupted or its motion is delayed.
+        </p>
+        <div class="project-links"><a href="bi-skad/">Project page</a></div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="container">&copy; 2026 Ningze Sun</footer>
+</body>
+</html>
