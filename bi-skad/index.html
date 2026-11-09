@@ -74,27 +74,11 @@
   <div class="container">
     <!-- Presentation video: uncomment and set the YouTube video ID, or replace the iframe with
          <video controls playsinline src="static/videos/presentation.mp4"></video>.
-         Once it is live, you can drop the two-video teaser grid below.
     <div class="video-embed">
       <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Bi-SKAD presentation video"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen></iframe>
     </div> -->
-    <div class="panel teaser-grid">
-      <figure style="margin:0">
-        <video autoplay muted loop playsinline preload="auto" aria-label="Bi-SKAD picking two bottles">
-          <source src="static/videos/pick_diverse_bottles/biskad_seed_1502_pick_diverse_bottles.mp4" type="video/mp4">
-        </video>
-        <figcaption class="vid-cap">Pick diverse bottles</figcaption>
-      </figure>
-      <figure style="margin:0">
-        <video autoplay muted loop playsinline preload="auto" aria-label="Bi-SKAD placing two shoes in a box">
-          <source src="static/videos/place_dual_shoes/biskad_seed_67_place_dual_shoes.mp4" type="video/mp4">
-        </video>
-        <figcaption class="vid-cap">Place dual shoes</figcaption>
-      </figure>
-    </div>
-    <p class="note">Bi-SKAD rollouts on held-out RoboTwin&nbsp;2.0 scenes, seen from the head camera.</p>
 
     <p class="summary reveal">
       <b>Bi-SKAD</b> trains two per-arm diffusion policies together and runs them apart: each arm acts on its own
