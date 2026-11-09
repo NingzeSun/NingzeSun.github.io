@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion</title>
+  <meta name="description"
+        content="Bi-SKAD is a bimanual diffusion policy trained centrally and executed as two decentralized per-arm policies that coordinate through a compact message, with own and partner affordances and a phase-based 3D trace.">
+  <meta name="keywords" content="Bimanual manipulation, decentralized diffusion policies, affordance learning, CTDE, imitation learning, RoboTwin">
+  <meta name="author" content="Ningze Sun, Roya Firoozi">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion">
+  <meta property="og:description" content="Two per-arm diffusion policies, trained together and coordinated through a compact message at execution.">
+  <meta property="og:url" content="https://ningzesun.github.io/bi-skad/">
+  <meta property="og:image" content="https://ningzesun.github.io/bi-skad/static/images/overview.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="static/css/style.css">
+
+  <script>document.documentElement.classList.add('js');</script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script defer src="static/js/main.js"></script>
+</head>
+<body>
+
+<!-- Left-side section rail; main.js fills it from the section titles. -->
+<nav id="section-progress" aria-label="Section navigation" hidden>
+  <div class="sp-track"><div class="sp-fill"></div></div>
+  <ul></ul>
+</nav>
+
+<!-- ============================== TITLE ============================== -->
+<header class="hero">
+  <div class="container">
+    <h1 class="publication-title">Bi-SKAD</h1>
+    <h2 class="publication-subtitle">Bimanual Semantic-Kinematic Affordance Diffusion</h2>
+    <p class="authors">
+      <a class="author-link" href="https://ningzesun.github.io/">Ningze Sun</a>,&nbsp;
+      <a class="author-link" href="https://sites.google.com/view/royafiroozi/home" target="_blank" rel="noopener">Roya Firoozi</a>
+    </p>
+    <p class="affiliation">University of Waterloo</p>
+    <!-- Add the venue once accepted, e.g.
+    <p><b>IEEE Robotics and Automation Letters (RA-L), 2026</b></p> -->
+
+    <div class="publication-links">
+      <!-- Replace a disabled button with a live link: drop "is-disabled", add href, remove the "soon" chip. -->
+      <a class="button is-disabled" aria-disabled="true" title="Coming soon">
+        <i class="fas fa-file-pdf" aria-hidden="true"></i><span>Paper</span><span class="soon">soon</span>
+      </a>
+      <a class="button is-disabled" aria-disabled="true" title="Coming soon">
+        <i class="fab fa-github" aria-hidden="true"></i><span>Code</span><span class="soon">soon</span>
+      </a>
+      <a class="button" href="#rollouts">
+        <i class="fas fa-video" aria-hidden="true"></i><span>Videos</span>
+      </a>
+      <a class="button" href="#bibtex">
+        <i class="fas fa-quote-right" aria-hidden="true"></i><span>BibTeX</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== TEASER ============================== -->
+<section class="section teaser">
+  <div class="container">
+    <!-- Presentation video: uncomment and set the YouTube video ID, or replace the iframe with
+         <video controls playsinline src="static/videos/presentation.mp4"></video>.
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Bi-SKAD presentation video"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+    </div> -->
+
+    <p class="summary reveal">
+      <b>Bi-SKAD</b> trains two per-arm diffusion policies together and runs them apart: each arm acts on its own
+      observation and a compact message from its partner. Own and partner affordances and a phase-based 3D trace give
+      each arm the coordination cues a monolithic policy gets from the joint observation, so
+      <b>one arm keeps working when its partner's sensing fails, and the pair still finishes when one arm is delayed.</b>
+    </p>
+
+    <div class="highlights reveal">
+      <div class="stat">
+        <div class="stat-value">79<span class="stat-unit">%</span></div>
+        <div class="stat-label">average success on 15 RoboTwin&nbsp;2.0 tasks</div>
+        <div class="stat-compare">&pi;<sub>0.5</sub> 80%, DM0.5 87%</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">64<span class="stat-unit">%</span></div>
+        <div class="stat-label">intact-arm success when the partner's sensors fail</div>
+        <div class="stat-compare">DM0.5 30%, &pi;<sub>0.5</sub> 18%</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">&minus;4<span class="stat-unit">pts</span></div>
+        <div class="stat-label">success lost when one arm is delayed 40 steps</div>
+        <div class="stat-compare">&pi;<sub>0.5</sub> &minus;26, DM0.5 &minus;34</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0.92<span class="stat-unit">nats</span></div>
+        <div class="stat-label">information a message carries about the receiver's action</div>
+        <div class="stat-compare">maximum ln&nbsp;4 &asymp; 1.39</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== ABSTRACT ============================== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal" id="abstract">Abstract</h2>
+    <div class="content reveal">
+      <p>
+        Bimanual manipulation requires two arms to divide roles over time, track task progress, and ground actions in a
+        shared scene. Policies that map a joint observation to a joint action couple the two arms inside a single
+        network, so neither agent can be perturbed or delayed on its own. We present <b>Bi-SKAD</b>, a bimanual
+        diffusion policy under centralized training with decentralized execution. The two arms are separate diffusion
+        policies acting on their own observations, coupled at execution through a communication channel. We introduce
+        two modules that make this decomposition work: a <b>semantic-kinematic affordance encoder</b> that predicts where
+        each arm and its partner should act, and a <b>phase-based 3D trace</b> that guides an arm's spatial motion. On
+        selected RoboTwin&nbsp;2.0 tasks and on real hardware, Bi-SKAD is comparable with fine-tuned monolithic
+        vision-language-action baselines while remaining robust when one agent's sensing is corrupted or its motion is
+        delayed. We further quantify how much the communication informs an arm's own action.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== METHOD ============================== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal" id="method">Method</h2>
+
+    <figure class="figure reveal">
+      <img class="zoomable" src="static/images/overview.png" width="2400" height="1296"
+           alt="Bi-SKAD overview: two decentralized per-arm policies exchange compact messages; each runs SKAE, a phase-based 3D trace and a DiT policy."
+           data-caption="Bi-SKAD overview.">
+      <figcaption>
+        <b>Bi-SKAD overview.</b> (a) Two decentralized per-arm policies coordinate through compact messages while
+        producing separate action chunks. (b) SKAE predicts own and partner affordances and feeds its latent and spatial
+        tokens downstream. (c) The phase-based trace predicts the trajectory to the current motion-phase target.
+        (d) The DiT policy fuses visual-language, state, affordance, and own and partner trace conditions to denoise
+        each arm's action chunk.
+      </figcaption>
+    </figure>
+
+    <div class="content reveal" style="margin-top:1.5rem">
+      <p>
+        We cast bimanual manipulation as a decentralized partially observable Markov decision process with one agent
+        per arm. Both agents see the shared top camera and the instruction; each also sees its own hand camera and
+        proprioception. At every step, agent \(i\) broadcasts a compact message holding its state, its gripper-closure
+        bit, and its predicted trace, and samples its action conditioned on its own observation and the message it
+        receives. The joint policy therefore factorizes into two per-arm policies that share no parameters:
+      </p>
+    </div>
+    <div class="equation reveal">
+      \[
+        \pi(\mathbf{a}_t \mid s_t) = \pi^1_{\theta^1}\!\left(a^1_t \mid o^1_t, m^2_t\right)\,
+                                    \pi^2_{\theta^2}\!\left(a^2_t \mid o^2_t, m^1_t\right)
+      \]
+      \[ m^i_t = \left(\mathbf{q}^i_t,\; b^i_t,\; \hat{\tau}^i_t\right) \]
+      <div class="eq-note">Trained jointly (centralized training), executed separately (decentralized execution).</div>
+    </div>
+
+    <div class="component-grid reveal">
+      <div class="component">
+        <span class="tag">Where to act</span>
+        <h3>Semantic-kinematic affordance encoder</h3>
+        <p>
+          From frozen DINOv3 and SigLIP&nbsp;2 features, the arm's state, and its partner's closure bit, a transformer
+          predicts two heatmaps: where this arm should act and where its partner should act. A validity head
+          predicts which arm the current affordance belongs to. Targets mark the next contact, masked to the
+          contacted part with SAM&nbsp;2.
+        </p>
+      </div>
+      <div class="component">
+        <span class="tag">How to move</span>
+        <h3>Phase-based 3D trace</h3>
+        <p>
+          Each arm predicts \(K\) points \((u, v, d)\), a top-camera pixel plus depth, from its gripper to the target of
+          its current motion phase. The predictor reads SKAE's affordance-supervised tokens and decoded affordance,
+          so it inherits SKAE's robustness to unseen scenes.
+        </p>
+      </div>
+      <div class="component">
+        <span class="tag">How to act together</span>
+        <h3>Communication and DiT policy</h3>
+        <p>
+          The partner's state and closure bit join the arm's conditioning state, and its trace is fused with the
+          arm's own. A diffusion transformer then denoises that arm's action chunk. Real-time chunking keeps
+          consecutive chunks consistent during closed-loop execution.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== QUALITATIVE ============================== -->
+<section class="section" id="qualitative-section">
+  <div class="container">
+    <h2 class="section-title reveal" id="grounding">Affordances and Traces</h2>
+    <div class="content reveal">
+      <p>
+        Each agent predicts its own and its partner's affordance from its own observation, and a phase-based trace
+        for its own gripper. The scenes below are held-out out-of-distribution scenes with unseen object placements,
+        lighting, and backgrounds. Choose a task; click any panel to enlarge it.
+      </p>
+    </div>
+
+    <div class="controls reveal">
+      <div class="control-group">
+        <span class="control-label" id="qual-task-label">Task</span>
+        <div class="segmented" role="group" aria-labelledby="qual-task-label" id="qual-tabs">
+          <button type="button" class="is-active" data-row="1" aria-pressed="true">Place bread on skillet</button>
+          <button type="button" data-row="2" aria-pressed="false">Lift pot</button>
+          <button type="button" data-row="3" aria-pressed="false">Stack bowls</button>
+          <button type="button" data-row="4" aria-pressed="false">Hang mug</button>
+        </div>
+      </div>
+    </div>
+    <p class="task-blurb" id="qual-blurb" aria-live="polite"></p>
+
+    <div class="panel qual-grid reveal" id="qual-grid">
+      <div class="qual-group">
+        <h4>Scene</h4>
+        <div class="qual-group-body">
+          <figure><img class="zoomable" data-panel="third" alt="" width="800" height="600"><figcaption>Third-person view</figcaption></figure>
+          <figure><img class="zoomable" data-panel="rgb" alt="" width="800" height="600"><figcaption>Head-camera RGB</figcaption></figure>
+        </div>
+      </div>
+      <div class="qual-group">
+        <h4>Affordance</h4>
+        <div class="qual-group-body">
+          <figure><img class="zoomable" data-panel="affordance_left" alt="" width="800" height="600"><figcaption>Left agent</figcaption></figure>
+          <figure><img class="zoomable" data-panel="affordance_right" alt="" width="800" height="600"><figcaption>Right agent</figcaption></figure>
+        </div>
+      </div>
+      <div class="qual-group">
+        <h4>Phase-based trace</h4>
+        <div class="qual-group-body">
+          <figure><img class="zoomable" data-panel="trace_left" alt="" width="800" height="600"><figcaption>Left agent</figcaption></figure>
+          <figure><img class="zoomable" data-panel="trace_right" alt="" width="800" height="600"><figcaption>Right agent</figcaption></figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i class="swatch own"></i>Own affordance</span>
+      <span><i class="swatch partner"></i>Partner affordance</span>
+      <span><i class="swatch line left"></i>Left agent trace</span>
+      <span><i class="swatch line right"></i>Right agent trace</span>
+    </div>
+    <p class="note">Crosses mark phase points; the large cross marks the endpoint of the current phase.</p>
+  </div>
+</section>
+
+<!-- ============================== RESULTS ============================== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal" id="results">Simulation Results</h2>
+    <div class="content reveal" style="margin-bottom:1.5rem">
+      <p>
+        We test on 15 bimanual tasks of RoboTwin&nbsp;2.0. Each task trains on 550 demonstrations (50 clean and 500
+        randomized) and is evaluated on held-out OOD scenes with unseen object placements, lighting, and backgrounds:
+        30 rollouts per entry (15 clean and 15 randomized). We compare against five retrained architecture ablations,
+        the decentralized diffusion policy LatentToM (LToM), and the fine-tuned monolithic vision-language-action
+        models &pi;<sub>0.5</sub> and DM0.5.
+      </p>
+    </div>
+
+    <!-- (1) Task success -->
+    <div class="result-card reveal">
+      <div class="result-row">
+        <div class="result-text">
+          <h3 class="subsection-title">Task success</h3>
+          <p>
+            With no fault injected, Bi-SKAD averages <b>79%</b>, level with &pi;<sub>0.5</sub> (80%) and slightly behind
+            DM0.5 (87%), while LToM reaches only 12% on these OOD scenes.
+          </p>
+          <p>
+            Removing communication costs only 5 points, since the shared top camera and SKAE's partner prediction
+            still carry implicit coordination. Centralized execution reaches 75%, so factorizing the policy does not
+            degrade performance. Without partner supervision SKAE assigns roles less reliably (66%), and removing the
+            affordance or the trace drops success to 53% and 39%, mostly on precise placement tasks.
+          </p>
+        </div>
+        <div class="result-chart" data-chart="success"></div>
+      </div>
+      <details class="per-task" data-table="success">
+        <summary>Per-task success rates (%)</summary>
+      </details>
+    </div>
+
+    <!-- (2) Fault isolation -->
+    <div class="result-card reveal">
+      <div class="result-row">
+        <div class="result-text">
+          <h3 class="subsection-title">Fault isolation</h3>
+          <p>
+            At serve time, one agent's proprioception receives Gaussian noise and its own hand camera is replaced by
+            random pixels; the shared top camera and instruction are untouched. We report the intact arm's own
+            subtask success.
+          </p>
+          <p>
+            Bi-SKAD keeps the intact arm at <b>64%</b>, well above the monoliths DM0.5 (30%) and &pi;<sub>0.5</sub> (18%),
+            whose joint conditioning passes the fault to both arms. The no-communication variant reaches 82%; the gap
+            is the cost of the channel, which passes the corrupted state to the intact agent.
+          </p>
+          <button type="button" class="link-button" data-goto-condition="noise">
+            <i class="fas fa-play-circle" aria-hidden="true"></i>Watch sensor-fault rollouts
+          </button>
+        </div>
+        <div class="result-chart" data-chart="fault"></div>
+      </div>
+      <details class="per-task" data-table="fault">
+        <summary>Per-task intact-arm subtask success (%)</summary>
+      </details>
+    </div>
+
+    <!-- (3) Asynchronous execution -->
+    <div class="result-card reveal">
+      <div class="result-row">
+        <div class="result-text">
+          <h3 class="subsection-title">Asynchronous execution</h3>
+          <p>
+            One arm's commanded action is held at its current pose for the first 40 environment steps. Both arms'
+            states stay intact, so we report full-task success.
+          </p>
+          <p>
+            Bi-SKAD is the best method at <b>75%</b>, losing only 4 points from its no-fault success, against 26 points
+            for &pi;<sub>0.5</sub> and 34 points for DM0.5, whose joint chunks assume the arms move in lockstep.
+          </p>
+          <button type="button" class="link-button" data-goto-condition="delay">
+            <i class="fas fa-play-circle" aria-hidden="true"></i>Watch delayed-arm rollouts
+          </button>
+        </div>
+        <div class="result-chart" data-chart="delay"></div>
+      </div>
+      <details class="per-task" data-table="delay">
+        <summary>Per-task success rates with one arm delayed (%)</summary>
+      </details>
+    </div>
+
+    <!-- (4) Value of communication -->
+    <div class="result-card reveal">
+      <div class="result-row is-figure">
+        <div class="result-text">
+          <h3 class="subsection-title">Value of communication</h3>
+          <p>
+            How much does the received message inform an agent's own action, given its local inputs \(o^i\)? Keeping
+            those inputs fixed, we sample actions with messages drawn uniformly from four recorded candidates and
+            estimate the Barber&ndash;Agakov lower bound
+          </p>
+          <div class="equation" style="margin:0.6rem 0 0.8rem">
+            \[ I\!\left(a^i; m^{-i} \mid o^i\right) \geq
+               \mathbb{E}\!\left[\log \frac{q_{\phi}(m^{-i} \mid a^i, o^i)}{p(m^{-i} \mid o^i)}\right] \]
+          </div>
+          <p>
+            Bi-SKAD averages <b>0.92 nats</b> of a maximum \(\ln 4 \approx 1.39\), so each agent's action depends on the
+            message it receives. Estimates saturate on grab roller and lift pot, where the arms hold one object
+            together, and are lowest on hanging mug and dump bin bigbin, where they act mostly in turn. The
+            no-communication variant receives no message, so its information is zero.
+          </p>
+        </div>
+        <figure class="result-figure figure">
+          <img class="zoomable" src="static/images/value_of_communication.png" width="1042" height="1100"
+               alt="Per-task estimated information lower bound in nats; Bi-SKAD with communication ranges from 0.33 (hanging mug) to 1.38 (grab roller, lift pot); the no-communication variant is zero everywhere."
+               data-caption="Estimated information lower bounds (nats). Bars show means and error bars show standard deviations across scenes.">
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== ROLLOUTS ============================== -->
+<section class="section" id="rollouts">
+  <div class="container">
+    <h2 class="section-title reveal" id="rollout-videos">Rollouts Under Faults</h2>
+    <div class="content reveal">
+      <p>
+        The same held-out scene, rolled out by Bi-SKAD, its no-communication variant, and the two monolithic VLA
+        baselines. Pick a task and a condition; every video shows the head camera.
+      </p>
+    </div>
+
+    <div class="controls reveal">
+      <div class="control-group">
+        <span class="control-label" id="roll-task-label">Task</span>
+        <div class="segmented" role="group" aria-labelledby="roll-task-label" id="roll-task">
+          <button type="button" class="is-active" data-task="pick_diverse_bottles" aria-pressed="true">Pick diverse bottles</button>
+          <button type="button" data-task="place_dual_shoes" aria-pressed="false">Place dual shoes</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label" id="roll-cond-label">Condition</span>
+        <div class="segmented" role="group" aria-labelledby="roll-cond-label" id="roll-condition">
+          <button type="button" class="is-active" data-condition="none" aria-pressed="true">No fault</button>
+          <button type="button" data-condition="noise" aria-pressed="false">Sensor fault</button>
+          <button type="button" data-condition="delay" aria-pressed="false">Delayed arm</button>
+        </div>
+      </div>
+    </div>
+    <p class="condition-blurb" id="roll-blurb" aria-live="polite"></p>
+
+    <div class="panel reveal">
+      <div class="rollout-grid" id="rollout-grid">
+        <figure class="is-ours" data-method="biskad">
+          <video muted loop playsinline autoplay preload="auto"></video>
+          <figcaption>Bi-SKAD (ours)</figcaption>
+        </figure>
+        <figure data-method="biskadnp">
+          <video muted loop playsinline autoplay preload="auto"></video>
+          <figcaption>Bi-SKAD w/o comm.</figcaption>
+        </figure>
+        <figure data-method="pi05">
+          <video muted loop playsinline autoplay preload="auto"></video>
+          <figcaption>&pi;<sub>0.5</sub></figcaption>
+        </figure>
+        <figure data-method="dm05">
+          <video muted loop playsinline autoplay preload="auto"></video>
+          <figcaption>DM0.5</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="rollout-actions">
+      <button type="button" class="link-button" id="roll-restart">
+        <i class="fas fa-rotate-left" aria-hidden="true"></i>Restart all four together
+      </button>
+    </div>
+    <p class="note">Clips differ in length because each policy finishes, or stalls, at its own pace; each loops on its own.</p>
+  </div>
+</section>
+
+<!-- ============================== REAL WORLD (add when ready) ==============================
+<section class="section">
+  <div class="container">
+    <h2 class="section-title reveal" id="real-world">Real-World Experiments</h2>
+    <div class="content reveal"><p>Describe the hardware setup and tasks here.</p></div>
+    <div class="panel teaser-grid reveal">
+      <figure style="margin:0">
+        <video autoplay muted loop playsinline><source src="static/videos/real/task1.mp4" type="video/mp4"></video>
+        <figcaption class="vid-cap">Real-world task 1</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <video autoplay muted loop playsinline><source src="static/videos/real/task2.mp4" type="video/mp4"></video>
+        <figcaption class="vid-cap">Real-world task 2</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+-->
+
+<!-- ============================== BIBTEX ============================== -->
+<section class="section" id="bibtex">
+  <div class="container">
+    <h2 class="section-title" id="citation">BibTeX</h2>
+    <div class="bibtex-wrap">
+      <button type="button" class="copy-button" id="copy-bibtex">Copy</button>
+<pre><code id="bibtex-code">@misc{sun2026biskad,
+  title  = {Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion},
+  author = {Sun, Ningze and Firoozi, Roya},
+  year   = {2026}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>
+      This page is adapted from the
+      <a href="https://github.com/crossformer-model/crossformer-model.github.io" target="_blank" rel="noopener">CrossFormer</a>
+      project page template, with a layout inspired by
+      <a href="https://chorus-model.github.io/" target="_blank" rel="noopener">CHORUS</a>.
+    </p>
+    <p><a href="https://ningzesun.github.io/">Ningze Sun</a></p>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Enlarged figure">
+  <button type="button" class="close" aria-label="Close">&times;</button>
+  <img alt="">
+  <p></p>
+</dialog>
+
+</body>
+</html>
