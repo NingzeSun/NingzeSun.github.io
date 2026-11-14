@@ -1,7 +1,7 @@
 // Google Analytics 4 for both the homepage and the project page.
 // Paste the measurement ID (Admin > Data streams > Web) below; nothing loads until then or on local previews.
 (function () {
-  var id = 'G-XXXXXXXXXX';
+  var id = 'G-QZ36MXXE5M';
   if (id === 'G-XXXXXXXXXX' || location.protocol === 'file:' || /^(localhost|127\.)/.test(location.hostname)) return;
   var s = document.createElement('script');
   s.async = true;
