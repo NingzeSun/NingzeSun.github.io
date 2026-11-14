@@ -1,4 +1,4 @@
-// Bi-SKAD project page: results data, charts, tables, and interactive viewers.
+// DeSKAD project page: results data, charts, tables, and interactive viewers.
 (function () {
   'use strict';
 
@@ -16,7 +16,7 @@
   var RESULTS = {
     success: {
       groups: [
-        { name: 'Bi-SKAD', columns: ['Ours', 'w/o comm.', 'Centr.', 'w/o partner aff.', 'w/o aff.', 'w/o trace'] },
+        { name: 'DeSKAD', columns: ['Ours', 'w/o comm.', 'Centr.', 'w/o partner aff.', 'w/o aff.', 'w/o trace'] },
         { name: 'Baselines', columns: ['LToM', PI05, 'DM0.5'] }
       ],
       rows: [
@@ -41,7 +41,7 @@
     },
     fault: {
       groups: [
-        { name: 'Bi-SKAD', columns: ['Ours', 'w/o comm.'] },
+        { name: 'DeSKAD', columns: ['Ours', 'w/o comm.'] },
         { name: 'Baselines', columns: ['LToM', PI05, 'DM0.5'] }
       ],
       rows: [
@@ -66,7 +66,7 @@
     },
     delay: {
       groups: [
-        { name: 'Bi-SKAD', columns: ['Ours', 'w/o comm.'] },
+        { name: 'DeSKAD', columns: ['Ours', 'w/o comm.'] },
         { name: 'Baselines', columns: ['LToM', PI05, 'DM0.5'] }
       ],
       rows: [
@@ -96,7 +96,7 @@
     success: {
       title: 'Average full-task success (%)',
       groups: [
-        { name: null, bars: [['Bi-SKAD (ours)', 0, true]] },
+        { name: null, bars: [['DeSKAD (ours)', 0, true]] },
         { name: 'Ablations', bars: [['w/o comm.', 1], ['Centralized', 2], ['w/o partner aff.', 3], ['w/o affordance', 4], ['w/o trace', 5]] },
         { name: 'Baselines', bars: [['LToM', 6], [PI05, 7], ['DM0.5', 8]] }
       ]
@@ -104,7 +104,7 @@
     fault: {
       title: 'Average intact-arm subtask success (%)',
       groups: [
-        { name: null, bars: [['Bi-SKAD (ours)', 0, true], ['w/o comm.', 1]] },
+        { name: null, bars: [['DeSKAD (ours)', 0, true], ['w/o comm.', 1]] },
         { name: 'Baselines', bars: [['LToM', 2], [PI05, 3], ['DM0.5', 4]] }
       ]
     },
@@ -113,7 +113,7 @@
       note: 'Grey numbers: change from the no-fault average.',
       from: [0, 1, 6, 7, 8],
       groups: [
-        { name: null, bars: [['Bi-SKAD (ours)', 0, true], ['w/o comm.', 1]] },
+        { name: null, bars: [['DeSKAD (ours)', 0, true], ['w/o comm.', 1]] },
         { name: 'Baselines', bars: [['LToM', 2], [PI05, 3], ['DM0.5', 4]] }
       ]
     }

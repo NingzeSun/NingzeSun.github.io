@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion</title>
+  <title>DeSKAD: Decentralized Semantic-Kinematic Affordance Diffusion for Bimanual Manipulation</title>
   <meta name="description"
-        content="Bi-SKAD is a bimanual diffusion policy trained centrally and executed as two decentralized per-arm policies that coordinate through a compact message, with own and partner affordances and a phase-based 3D trace.">
+        content="DeSKAD is a bimanual diffusion policy trained centrally and executed as two decentralized per-arm policies that coordinate through a compact message, with own and partner affordances and a phase-based 3D trace.">
   <meta name="keywords" content="Bimanual manipulation, decentralized diffusion policies, affordance learning, CTDE, imitation learning, RoboTwin">
   <meta name="author" content="Ningze Sun, Roya Firoozi">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion">
+  <meta property="og:title" content="DeSKAD: Decentralized Semantic-Kinematic Affordance Diffusion for Bimanual Manipulation">
   <meta property="og:description" content="Two per-arm diffusion policies, trained together and coordinated through a compact message at execution.">
-  <meta property="og:url" content="https://ningzesun.github.io/bi-skad/">
-  <meta property="og:image" content="https://ningzesun.github.io/bi-skad/static/images/overview.png">
+  <meta property="og:url" content="https://ningzesun.github.io/deskad/">
+  <meta property="og:image" content="https://ningzesun.github.io/deskad/static/images/overview.png">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
@@ -41,8 +41,8 @@
 <!-- ============================== TITLE ============================== -->
 <header class="hero">
   <div class="container">
-    <h1 class="publication-title">Bi-SKAD</h1>
-    <h2 class="publication-subtitle">Bimanual Semantic-Kinematic Affordance Diffusion</h2>
+    <h1 class="publication-title">DeSKAD</h1>
+    <h2 class="publication-subtitle">Decentralized Semantic-Kinematic Affordance Diffusion for Bimanual Manipulation</h2>
     <p class="authors">
       <a class="author-link" href="https://ningzesun.github.io/">Ningze Sun</a>,&nbsp;
       <a class="author-link" href="https://sites.google.com/view/royafiroozi/home" target="_blank" rel="noopener">Roya Firoozi</a>
@@ -75,13 +75,13 @@
     <!-- Presentation video: uncomment and set the YouTube video ID, or replace the iframe with
          <video controls playsinline src="static/videos/presentation.mp4"></video>.
     <div class="video-embed">
-      <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Bi-SKAD presentation video"
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="DeSKAD presentation video"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen></iframe>
     </div> -->
 
     <p class="summary reveal">
-      <b>Bi-SKAD</b> trains two per-arm diffusion policies together and runs them apart: each arm acts on its own
+      <b>DeSKAD</b> trains two per-arm diffusion policies together and runs them apart: each arm acts on its own
       observation and a compact message from its partner. Own and partner affordances and a phase-based 3D trace give
       each arm the coordination cues a monolithic policy gets from the joint observation, so
       <b>one arm keeps working when its partner's sensing fails, and the pair still finishes when one arm is delayed.</b>
@@ -120,12 +120,12 @@
       <p>
         Bimanual manipulation requires two arms to divide roles over time, track task progress, and ground actions in a
         shared scene. Policies that map a joint observation to a joint action couple the two arms inside a single
-        network, so neither agent can be perturbed or delayed on its own. We present <b>Bi-SKAD</b>, a bimanual
+        network, so neither agent can be perturbed or delayed on its own. We present <b>DeSKAD</b>, a bimanual
         diffusion policy under centralized training with decentralized execution. The two arms are separate diffusion
         policies acting on their own observations, coupled at execution through a communication channel. We introduce
         two modules that make this decomposition work: a <b>semantic-kinematic affordance encoder</b> that predicts where
         each arm and its partner should act, and a <b>phase-based 3D trace</b> that guides an arm's spatial motion. On
-        selected RoboTwin&nbsp;2.0 tasks and on real hardware, Bi-SKAD is comparable with fine-tuned monolithic
+        selected RoboTwin&nbsp;2.0 tasks and on real hardware, DeSKAD is comparable with fine-tuned monolithic
         vision-language-action baselines while remaining robust when one agent's sensing is corrupted or its motion is
         delayed. We further quantify how much the communication informs an arm's own action.
       </p>
@@ -140,10 +140,10 @@
 
     <figure class="figure reveal">
       <img class="zoomable" src="static/images/overview.png" width="2400" height="1296"
-           alt="Bi-SKAD overview: two decentralized per-arm policies exchange compact messages; each runs SKAE, a phase-based 3D trace and a DiT policy."
-           data-caption="Bi-SKAD overview.">
+           alt="DeSKAD overview: two decentralized per-arm policies exchange compact messages; each runs SKAE, a phase-based 3D trace and a DiT policy."
+           data-caption="DeSKAD overview.">
       <figcaption>
-        <b>Bi-SKAD overview.</b> (a) Two decentralized per-arm policies coordinate through compact messages while
+        <b>DeSKAD overview.</b> (a) Two decentralized per-arm policies coordinate through compact messages while
         producing separate action chunks. (b) SKAE predicts own and partner affordances and feeds its latent and spatial
         tokens downstream. (c) The phase-based trace predicts the trajectory to the current motion-phase target.
         (d) The DiT policy fuses visual-language, state, affordance, and own and partner trace conditions to denoise
@@ -178,6 +178,12 @@
           predicts two heatmaps: where this arm should act and where its partner should act. A validity head
           predicts which arm the current affordance belongs to. Targets mark the next contact, masked to the
           contacted part with SAM&nbsp;2.
+        </p>
+        <p>
+          The affordance is <em>semantic</em> because it is read from visual-language features of the scene and
+          instruction and supervised on the contacted object part. It is <em>kinematic</em> because it depends on
+          the arm's state and its partner's closure bit and targets each arm's next contact, so it changes as the
+          task progresses.
         </p>
       </div>
       <div class="component">
@@ -281,7 +287,7 @@
         <div class="result-text">
           <h3 class="subsection-title">Task success</h3>
           <p>
-            With no fault injected, Bi-SKAD averages <b>79%</b>, level with &pi;<sub>0.5</sub> (80%) and slightly behind
+            With no fault injected, DeSKAD averages <b>79%</b>, level with &pi;<sub>0.5</sub> (80%) and slightly behind
             DM0.5 (87%), while LToM reaches only 12% on these OOD scenes.
           </p>
           <p>
@@ -309,7 +315,7 @@
             subtask success.
           </p>
           <p>
-            Bi-SKAD keeps the intact arm at <b>64%</b>, well above the monoliths DM0.5 (30%) and &pi;<sub>0.5</sub> (18%),
+            DeSKAD keeps the intact arm at <b>64%</b>, well above the monoliths DM0.5 (30%) and &pi;<sub>0.5</sub> (18%),
             whose joint conditioning passes the fault to both arms. The no-communication variant reaches 82%; the gap
             is the cost of the channel, which passes the corrupted state to the intact agent.
           </p>
@@ -334,7 +340,7 @@
             states stay intact, so we report full-task success.
           </p>
           <p>
-            Bi-SKAD is the best method at <b>75%</b>, losing only 4 points from its no-fault success, against 26 points
+            DeSKAD is the best method at <b>75%</b>, losing only 4 points from its no-fault success, against 26 points
             for &pi;<sub>0.5</sub> and 34 points for DM0.5, whose joint chunks assume the arms move in lockstep.
           </p>
           <button type="button" class="link-button" data-goto-condition="delay">
@@ -363,7 +369,7 @@
                \mathbb{E}\!\left[\log \frac{q_{\phi}(m^{-i} \mid a^i, o^i)}{p(m^{-i} \mid o^i)}\right] \]
           </div>
           <p>
-            Bi-SKAD averages <b>0.92 nats</b> of a maximum \(\ln 4 \approx 1.39\), so each agent's action depends on the
+            DeSKAD averages <b>0.92 nats</b> of a maximum \(\ln 4 \approx 1.39\), so each agent's action depends on the
             message it receives. Estimates saturate on grab roller and lift pot, where the arms hold one object
             together, and are lowest on hanging mug and dump bin bigbin, where they act mostly in turn. The
             no-communication variant receives no message, so its information is zero.
@@ -371,7 +377,7 @@
         </div>
         <figure class="result-figure figure">
           <img class="zoomable" src="static/images/value_of_communication.png" width="1042" height="1100"
-               alt="Per-task estimated information lower bound in nats; Bi-SKAD with communication ranges from 0.33 (hanging mug) to 1.38 (grab roller, lift pot); the no-communication variant is zero everywhere."
+               alt="Per-task estimated information lower bound in nats; DeSKAD with communication ranges from 0.33 (hanging mug) to 1.38 (grab roller, lift pot); the no-communication variant is zero everywhere."
                data-caption="Estimated information lower bounds (nats). Bars show means and error bars show standard deviations across scenes.">
         </figure>
       </div>
@@ -385,7 +391,7 @@
     <h2 class="section-title reveal" id="rollout-videos">Rollouts Under Faults</h2>
     <div class="content reveal">
       <p>
-        The same held-out scene, rolled out by Bi-SKAD, its no-communication variant, and the two monolithic VLA
+        The same held-out scene, rolled out by DeSKAD, its no-communication variant, and the two monolithic VLA
         baselines. Pick a task and a condition; every video shows the head camera.
       </p>
     </div>
@@ -411,13 +417,13 @@
 
     <div class="panel reveal">
       <div class="rollout-grid" id="rollout-grid">
-        <figure class="is-ours" data-method="biskad">
+        <figure class="is-ours" data-method="deskad">
           <video muted loop playsinline autoplay preload="auto"></video>
-          <figcaption>Bi-SKAD (ours)</figcaption>
+          <figcaption>DeSKAD (ours)</figcaption>
         </figure>
-        <figure data-method="biskadnp">
+        <figure data-method="deskadnp">
           <video muted loop playsinline autoplay preload="auto"></video>
-          <figcaption>Bi-SKAD w/o comm.</figcaption>
+          <figcaption>DeSKAD w/o comm.</figcaption>
         </figure>
         <figure data-method="pi05">
           <video muted loop playsinline autoplay preload="auto"></video>
@@ -463,8 +469,8 @@
     <h2 class="section-title" id="citation">BibTeX</h2>
     <div class="bibtex-wrap">
       <button type="button" class="copy-button" id="copy-bibtex">Copy</button>
-<pre><code id="bibtex-code">@misc{sun2026biskad,
-  title  = {Bi-SKAD: Bimanual Semantic-Kinematic Affordance Diffusion},
+<pre><code id="bibtex-code">@misc{sun2026deskad,
+  title  = {DeSKAD: Decentralized Semantic-Kinematic Affordance Diffusion for Bimanual Manipulation},
   author = {Sun, Ningze and Firoozi, Roya},
   year   = {2026}
 }</code></pre>
@@ -474,12 +480,6 @@
 
 <footer class="footer">
   <div class="container">
-    <p>
-      This page is adapted from the
-      <a href="https://github.com/crossformer-model/crossformer-model.github.io" target="_blank" rel="noopener">CrossFormer</a>
-      project page template, with a layout inspired by
-      <a href="https://chorus-model.github.io/" target="_blank" rel="noopener">CHORUS</a>.
-    </p>
     <p><a href="https://ningzesun.github.io/">Ningze Sun</a></p>
   </div>
 </footer>
