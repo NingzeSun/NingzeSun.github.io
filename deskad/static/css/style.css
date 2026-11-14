@@ -233,17 +233,6 @@ b, strong { color: var(--ink); font-weight: 600; }
   background: #fff;
   cursor: pointer;
 }
-<<<<<<< Updated upstream
-.teaser-video figcaption {
-  margin: 0.5rem auto 0;
-  max-width: var(--container);
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.45;
-  text-align: center;
-}
-=======
->>>>>>> Stashed changes
 .teaser-toggle {
   position: absolute;
   right: 10px;
