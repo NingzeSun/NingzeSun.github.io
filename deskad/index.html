@@ -11,7 +11,7 @@
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="DeSKAD: Decentralized Semantic-Kinematic Affordance Diffusion for Bimanual Manipulation">
-  <meta property="og:description" content="Two per-arm diffusion policies, trained together and coordinated through a compact message at execution.">
+  <meta property="og:description" content="Two per-arm diffusion policies under centralized training with decentralized execution, coordinated through a compact message.">
   <meta property="og:url" content="https://ningzesun.github.io/deskad/">
   <meta property="og:image" content="https://ningzesun.github.io/deskad/static/images/overview.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -71,6 +71,27 @@
 
 <!-- ============================== TEASER ============================== -->
 <section class="section teaser">
+  <div class="container is-wide">
+    <!-- Built by Paper/scripts/build_teaser_video.py; add hardware segments there and re-run it. -->
+    <figure class="teaser-video">
+      <div class="teaser-frame">
+        <video id="teaser-video" autoplay muted loop playsinline preload="auto"
+               poster="static/images/teaser_poster.jpg"
+               aria-label="Simulation rollouts of DeSKAD and three baselines with no fault, a sensor fault, and a delayed arm">
+          <source src="static/videos/teaser.mp4" type="video/mp4">
+        </video>
+        <button type="button" class="teaser-toggle" id="teaser-toggle" aria-label="Pause video">
+          <i class="fas fa-pause" aria-hidden="true"></i>
+        </button>
+      </div>
+      <figcaption>
+        Held-out RoboTwin&nbsp;2.0 scenes at 2&times; speed. Columns are policies; rows are no fault, a sensor fault
+        on one arm, and one arm delayed for 40 steps. A finished clip holds its last frame.
+        <a href="#rollouts">Compare them one by one below.</a>
+      </figcaption>
+    </figure>
+  </div>
+
   <div class="container">
     <!-- Presentation video: uncomment and set the YouTube video ID, or replace the iframe with
          <video controls playsinline src="static/videos/presentation.mp4"></video>.
@@ -81,8 +102,9 @@
     </div> -->
 
     <p class="summary reveal">
-      <b>DeSKAD</b> trains two per-arm diffusion policies together and runs them apart: each arm acts on its own
-      observation and a compact message from its partner. Own and partner affordances and a phase-based 3D trace give
+      <b>DeSKAD</b> follows centralized training with decentralized execution (CTDE): two per-arm diffusion
+      policies are trained jointly, and at execution each arm acts on its own observation and a compact message
+      from its partner. Own and partner affordances and a phase-based 3D trace give
       each arm the coordination cues a monolithic policy gets from the joint observation, so
       <b>one arm keeps working when its partner's sensing fails, and the pair still finishes when one arm is delayed.</b>
     </p>

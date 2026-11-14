@@ -27,6 +27,7 @@
   --font: 'Avenir Next', 'Avenir', 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   --container: 960px;
+  --container-wide: 1160px;          /* hero and teaser video */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -55,6 +56,9 @@ b, strong { color: var(--ink); font-weight: 600; }
   margin: 0 auto;
   padding: 0 16px;
 }
+.hero .container { max-width: var(--container-wide); }
+/* The 440px keeps the teaser clear of the fixed section rail. */
+.container.is-wide { max-width: clamp(var(--container), calc(100vw - 440px), var(--container-wide)); }
 
 /* ---------------------------------------------------------------- hero */
 
@@ -78,6 +82,11 @@ b, strong { color: var(--ink); font-weight: 600; }
   font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.3;
+}
+
+/* One line from tablet width up; 2.2vw keeps even a wide fallback font inside the container. */
+@media (min-width: 769px) {
+  .publication-subtitle { white-space: nowrap; font-size: min(1.5rem, 2.2vw); }
 }
 
 .hero p {
@@ -214,6 +223,46 @@ b, strong { color: var(--ink); font-weight: 600; }
   border-radius: 6px;
   background: #ddd;
 }
+
+.teaser-video { margin: 0 0 0.25rem; }
+.teaser-frame { position: relative; }
+.teaser-frame video {
+  width: 100%;
+  aspect-ratio: 1820 / 1046;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+.teaser-video figcaption {
+  margin: 0.5rem auto 0;
+  max-width: var(--container);
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  text-align: center;
+}
+.teaser-toggle {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.teaser-frame:hover .teaser-toggle,
+.teaser-toggle:focus-visible { opacity: 1; }
+.teaser-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (hover: none) { .teaser-toggle { opacity: 0.85; } }
 
 .video-embed {
   aspect-ratio: 16 / 9;

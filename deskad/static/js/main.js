@@ -345,6 +345,32 @@
   }
 
   // --------------------------------------------------------------- lightbox
+  // ---------------------------------------------------------------- teaser
+  function initTeaser() {
+    var video = $('#teaser-video');
+    var button = $('#teaser-toggle');
+    if (!video || !button) return;
+    var icon = $('i', button);
+    function sync() {
+      icon.className = video.paused ? 'fas fa-play' : 'fas fa-pause';
+      button.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video');
+    }
+    function toggle() {
+      if (!video.paused) { video.pause(); return; }
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    button.addEventListener('click', toggle);
+    video.addEventListener('click', toggle);
+    video.addEventListener('play', sync);
+    video.addEventListener('pause', sync);
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      video.removeAttribute('autoplay');
+      video.pause();
+    }
+    sync();
+  }
+
   function initLightbox() {
     var box = $('#lightbox');
     if (!box || typeof box.showModal !== 'function') return;
@@ -460,6 +486,7 @@
   function boot() {
     $all('[data-chart]').forEach(function (c) { renderChart(c, c.getAttribute('data-chart')); });
     $all('details[data-table]').forEach(function (d) { renderTable(d, d.getAttribute('data-table')); });
+    initTeaser();
     initQualitative();
     initRollouts();
     initLightbox();
