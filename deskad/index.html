@@ -29,6 +29,7 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
   <script defer src="static/js/main.js"></script>
+  <script defer src="../analytics.js"></script>
 </head>
 <body>
 
@@ -84,11 +85,14 @@
           <i class="fas fa-pause" aria-hidden="true"></i>
         </button>
       </div>
+<<<<<<< Updated upstream
       <figcaption>
         Held-out RoboTwin&nbsp;2.0 scenes at 2&times; speed. Columns are policies; rows are no fault, a sensor fault
         on one arm, and one arm delayed for 40 steps. A finished clip holds its last frame.
         <a href="#rollouts">Compare them one by one below.</a>
       </figcaption>
+=======
+>>>>>>> Stashed changes
     </figure>
   </div>
 
@@ -106,7 +110,8 @@
       policies are trained jointly, and at execution each arm acts on its own observation and a compact message
       from its partner. Own and partner affordances and a phase-based 3D trace give
       each arm the coordination cues a monolithic policy gets from the joint observation, so
-      <b>one arm keeps working when its partner's sensing fails, and the pair still finishes when one arm is delayed.</b>
+      <b>when one arm's sensors fail, the other still completes its own subtask, and when one arm is delayed, the
+      pair still finishes the task.</b>
     </p>
 
     <div class="highlights reveal">
