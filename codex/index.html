@@ -175,7 +175,7 @@
         We cast bimanual manipulation as a decentralized partially observable Markov decision process with one agent
         per arm. Both agents see the shared top camera and the instruction; each also sees its own hand camera and
         proprioception. At every step, agent \(i\) broadcasts a compact message holding its state, its gripper-closure
-        bit, and its predicted trace, and samples its action conditioned on its own observation and the message it
+        bit, its predicted trace, and its agent-specific affordance (ASA) logit, and samples its action conditioned on its own observation and the message it
         receives. The joint policy therefore factorizes into two per-arm policies that share no parameters:
       </p>
     </div>
@@ -184,7 +184,7 @@
         \pi(\mathbf{a}_t \mid s_t) = \pi^1_{\theta^1}\!\left(a^1_t \mid o^1_t, m^2_t\right)\,
                                     \pi^2_{\theta^2}\!\left(a^2_t \mid o^2_t, m^1_t\right)
       \]
-      \[ m^i_t = \left(\mathbf{q}^i_t,\; b^i_t,\; \hat{\tau}^i_t\right) \]
+      \[ m^i_t = \left(\mathbf{q}^i_t,\; b^i_t,\; \hat{\tau}^i_t,\; s^i_t\right) \]
       <div class="eq-note">Trained jointly (centralized training), executed separately (decentralized execution).</div>
     </div>
 
@@ -194,8 +194,9 @@
         <h3>Semantic-kinematic affordance encoder</h3>
         <p>
           From frozen DINOv3 and SigLIP&nbsp;2 features, the arm's state, and its partner's closure bit, a transformer
-          predicts two heatmaps: where this arm should act and where its partner should act. A validity head
-          predicts which arm the current affordance belongs to. Targets mark the next contact, masked to the
+          predicts two heatmaps: where this arm should act and where its partner should act. An ASA head
+          outputs a logit that, normalized against the partner's logit from the message, gives the ASA score:
+          how likely the current affordance belongs to this arm. Targets mark the next contact, masked to the
           contacted part with SAM&nbsp;2.
         </p>
         <p>
@@ -218,8 +219,8 @@
         <span class="tag">How to act together</span>
         <h3>Communication and DiT policy</h3>
         <p>
-          The partner's state and closure bit join the arm's conditioning state, and its trace is fused with the
-          arm's own. A diffusion transformer then denoises that arm's action chunk. Real-time chunking keeps
+          The partner's state and closure bit join the arm's conditioning state, its ASA logit normalizes the arm's
+          ASA score, and its trace is fused with the arm's own. A diffusion transformer then denoises that arm's action chunk. Real-time chunking keeps
           consecutive chunks consistent during closed-loop execution.
         </p>
       </div>
